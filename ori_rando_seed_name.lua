@@ -6,7 +6,7 @@ hotkey_id     = obs.OBS_INVALID_HOTKEY_ID
 function string_split(s)
 	local arr = {}
 	i = 1
-	for v in string.gmatch(s, "%w+") do
+	for v in string.gmatch(s, "(.*?),(.*?),.*?%|(.*)") do
 		arr[i] = v
 		i = i + 1
 	end
@@ -27,10 +27,11 @@ function read_file(f)
 	end
 	
 	local file = io.open(f)
-	local params = string_split(file:read())
+	local difficulty, mode, seed = string.match(file:read(), "(.-),(.-),.-%|(.*)$")
+	-- local params = string_split(file:read())
 	file:close()
 	
-	return "Seed: " .. params[1] .. " " .. params[2] .. " " .. params[#params]
+	return "Seed: " .. difficulty .. " " .. mode .. " " .. seed
 end
 
 function load_seed()
