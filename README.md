@@ -1,5 +1,6 @@
 # Installation
-Download the file from releases.
+Download the latest `ori_rando_seed_name.lua` file from [releases](https://github.com/jhobz/ori-obs-scripts/releases)
+
 In OBS Studio, go to Tools -> Scripts -> + and find the file you downloaded.
 
 # Usage
