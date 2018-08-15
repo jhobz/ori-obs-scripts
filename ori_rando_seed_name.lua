@@ -72,7 +72,7 @@ end
 -- A function named script_description returns the description shown to
 -- the user
 function script_description()
-	return "Reads the `randomizer.dat` file for Ori rando and outputs the name of the seed.\n\nMade by Jim"
+	return "Reads the `randomizer.dat` file for Ori rando and outputs the name of the seed.\n\nVersion 1.1\n\nMade by JHobz"
 end
 
 -- A function named script_update will be called when settings are changed
