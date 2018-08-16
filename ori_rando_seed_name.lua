@@ -1,7 +1,9 @@
-obs           = obslua
-source_name   = ""
-file_location = ""
-hotkey_id     = obs.OBS_INVALID_HOTKEY_ID
+obs            = obslua
+source_name    = ""
+file_location  = ""
+string_format  = ""
+default_format = "%d %m\nSeed: %s"
+hotkey_id      = obs.OBS_INVALID_HOTKEY_ID
 
 function string_split(s)
 	local arr = {}
@@ -13,12 +15,12 @@ function string_split(s)
 	return arr
 end
 
-function file_exists(file)
-	local f = io.open(file, "r")
-	if f then
-		f:close()
+function file_exists(f)
+	local file = io.open(f, "r")
+	if file then
+		file:close()
 	end
-	return f ~= nil
+	return file ~= nil
 end
 
 function read_file(f)
@@ -28,15 +30,20 @@ function read_file(f)
 	
 	local file = io.open(f)
 	local difficulty, mode, seed = string.match(file:read(), "(.-),(.-),.-%|(.*)$")
-	-- local params = string_split(file:read())
 	file:close()
+
+	local text = string_format
+	text = text:gsub("%%d", difficulty)
+	text = text:gsub("%%m", mode)
+	text = text:gsub("%%s", seed)
 	
-	return "Seed: " .. difficulty .. " " .. mode .. " " .. seed
+	return text
 end
 
 function load_seed()
 	local source = obs.obs_get_source_by_name(source_name)
 	local text = read_file(file_location)
+
 	if source ~= nil then
 		local settings = obs.obs_data_create()
 		obs.obs_data_set_string(settings, "text", text)
@@ -53,7 +60,6 @@ end
 function script_properties()
 	local props = obs.obs_properties_create()
 	local p = obs.obs_properties_add_list(props, "source", "Text Source", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
-	local f = obs.obs_properties_add_path(props, "path", "Path to randomizer.dat file", obs.OBS_PATH_FILE, "Randomizer seed file (*.dat)", "C:/Program Files (x86)/Steam/steamapps/common/Ori DE")
 	local sources = obs.obs_enum_sources()
 	if sources ~= nil then
 		for _, source in ipairs(sources) do
@@ -66,25 +72,30 @@ function script_properties()
 	end
 	obs.source_list_release(sources)
 
+	obs.obs_properties_add_path(props, "path", "Path to randomizer.dat file", obs.OBS_PATH_FILE, "Randomizer seed file (*.dat)", "C:/Program Files (x86)/Steam/steamapps/common/Ori DE")
+	obs.obs_properties_add_text(props, "format", "Output Format\n%d - difficulty\n%m - mode\n%s - seed name", obs.OBS_TEXT_MULTILINE)
+
 	return props
 end
 
 -- A function named script_description returns the description shown to
 -- the user
 function script_description()
-	return "Reads the `randomizer.dat` file for Ori rando and outputs the name of the seed.\n\nVersion 1.1\n\nMade by JHobz"
+	return "Reads the randomizer.dat file for Ori rando and outputs the name of the seed.\n\nVersion 1.2\n\nMade by JHobz"
 end
 
 -- A function named script_update will be called when settings are changed
 function script_update(settings)
 	source_name = obs.obs_data_get_string(settings, "source")
 	file_location = obs.obs_data_get_string(settings, "path")
+	string_format = obs.obs_data_get_string(settings, "format")
 
 	load_seed()
 end
 
 -- A function named script_defaults will be called to set the default settings
 function script_defaults(settings)
+	obs.obs_data_set_default_string(settings, "format", default_format)
 end
 
 -- A function named script_save will be called when the script is saved
