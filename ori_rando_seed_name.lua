@@ -2,8 +2,12 @@ obs            = obslua
 source_name    = ""
 file_location  = ""
 string_format  = ""
-default_format = "%d %m\nSeed: %s"
+default_format = "%Dd %Mm\nSeed: %s"
 hotkey_id      = obs.OBS_INVALID_HOTKEY_ID
+
+function first_to_upper(s)
+	return s:sub(1,1):upper() .. s:sub(2)
+end
 
 function string_split(s)
 	local arr = {}
@@ -33,8 +37,12 @@ function read_file(f)
 	file:close()
 
 	local text = string_format
-	text = text:gsub("%%d", difficulty)
-	text = text:gsub("%%m", mode)
+	text = text:gsub("%%dd", difficulty:lower())
+	text = text:gsub("%%Dd", first_to_upper(difficulty))
+	text = text:gsub("%%DD", difficulty:upper())
+	text = text:gsub("%%mm", mode:lower())
+	text = text:gsub("%%Mm", first_to_upper(mode))
+	text = text:gsub("%%mm", mode:upper())
 	text = text:gsub("%%s", seed)
 	
 	return text
@@ -73,7 +81,7 @@ function script_properties()
 	obs.source_list_release(sources)
 
 	obs.obs_properties_add_path(props, "path", "Path to randomizer.dat file", obs.OBS_PATH_FILE, "Randomizer seed file (*.dat)", "C:/Program Files (x86)/Steam/steamapps/common/Ori DE")
-	obs.obs_properties_add_text(props, "format", "Output Format\n%d - difficulty\n%m - mode\n%s - seed name", obs.OBS_TEXT_MULTILINE)
+	obs.obs_properties_add_text(props, "format", "Output Format\n--\n%dd - difficulty\n%mm - mode\n%s - seed name\n--\nUse capitalization of params\nto format output as lowercase (%dd),\nFirstletter (%Dd), UPPERCASE (%DD)", obs.OBS_TEXT_MULTILINE)
 
 	return props
 end
@@ -81,7 +89,7 @@ end
 -- A function named script_description returns the description shown to
 -- the user
 function script_description()
-	return "Reads the randomizer.dat file for Ori rando and outputs the name of the seed.\n\nVersion 1.2\n\nMade by JHobz"
+	return "Reads the randomizer.dat file for Ori rando and outputs the name of the seed.\n\nVersion 1.3\n\nMade by JHobz"
 end
 
 -- A function named script_update will be called when settings are changed
