@@ -8,6 +8,7 @@ In the script properties:
 
 * Set the text source you want to be populated.
 * Set the path to your randomizer.dat file.
+* *(Optional)* Customize the output format.
 
 In OBS properties:
 
