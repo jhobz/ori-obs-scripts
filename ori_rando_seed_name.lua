@@ -9,15 +9,15 @@ function first_to_upper(s)
 	return s:sub(1,1):upper() .. s:sub(2)
 end
 
-function string_split(s)
-	local arr = {}
-	i = 1
-	for v in string.gmatch(s, "(.*?),(.*?),.*?%|(.*)") do
-		arr[i] = v
-		i = i + 1
-	end
-	return arr
-end
+--function string_split(s)
+--	local arr = {}
+--	i = 1
+--	for v in string.gmatch(s, "(.*?),(.*?),.*?%|(.*)") do
+--		arr[i] = v
+--		i = i + 1
+--	end
+--	return arr
+--end
 
 function file_exists(f)
 	local file = io.open(f, "r")
@@ -33,7 +33,7 @@ function read_file(f)
 	end
 	
 	local file = io.open(f)
-	local difficulty, mode, seed = string.match(file:read(), "(.-),(.-),.-%|(.*)$")
+	local difficulty, mode, seed = string.match(file:read(), ".-,(.-),(.-),balanced%|(.*)$")
 	file:close()
 
 	local text = string_format
@@ -89,7 +89,7 @@ end
 -- A function named script_description returns the description shown to
 -- the user
 function script_description()
-	return "Reads the randomizer.dat file for Ori rando and outputs the name of the seed.\n\nVersion 1.3\n\nMade by JHobz"
+	return "Reads the randomizer.dat file for Ori rando and outputs the name of the seed.\n\nVersion 1.4\n\nMade by JHobz"
 end
 
 -- A function named script_update will be called when settings are changed
